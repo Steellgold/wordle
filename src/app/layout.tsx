@@ -5,6 +5,8 @@ import { Component } from "@/lib/components/utils/component";
 import { PropsWithChildren } from "react";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/lib/components/providers/theme-provider";
+import Script from "next/script";
+import { env } from "../lib/env.mjs";
 
 const nunito = Nunito({ subsets: ["latin"] });
 
@@ -28,18 +30,22 @@ export const viewport: Viewport = {
 };
 
 const Layout: Component<PropsWithChildren> = ({ children }) => {
+  console.log(env.NEXT_PUBLIC_ENV);
+
   return (
-    <html lang="en">
-      {process.env.NEXT_PUBLIC_ENV !== "dev" && (
-        <script defer src="https://supalytics.co/track.js" data-website-id="5ec3ae77-9e61-42d6-b5f7-dba5a7dc9569"></script>
-      )}
-      
-      <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
-        <body className={cn("bg-[#1A1A1A]", nunito.className)}>
-          {children}
-        </body>
-      </ThemeProvider>
-    </html>
+    <>
+      <html lang="en">
+        {process.env.NEXT_PUBLIC_ENV !== "dev" && (
+          <Script defer src="https://supalytics.co/track.js" data-website-id="5ec3ae77-9e61-42d6-b5f7-dba5a7dc9569" />
+        )}
+
+        <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
+          <body className={cn("bg-[#1A1A1A]", nunito.className)}>          
+            {children}
+          </body>
+        </ThemeProvider>
+      </html>
+    </>
   );
 }
 
