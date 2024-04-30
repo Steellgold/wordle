@@ -29,6 +29,6 @@
       "@/config/*": ["./src/lib/config/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/lib/components/wordle/cards/stats/stats.tsxx"],
   "exclude": ["node_modules"]
 }
