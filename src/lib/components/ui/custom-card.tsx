@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react";
-import { Component } from "./utils/component";
-import { Card } from "./ui/card";
-import { cn } from "../utils";
+import { Component } from "../utils/component";
+import { Card } from "./card";
+import { cn } from "../../utils";
 
 export const CustomCard: Component<PropsWithChildren & {
   className?: string,
