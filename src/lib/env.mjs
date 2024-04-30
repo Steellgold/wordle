@@ -11,12 +11,18 @@ export const env = createEnv({
     POSTGRES_PASSWORD: z.string(),
     POSTGRES_HOST: z.string(),
     POSTGRES_DATABASE: z.string(),
+    
+    PRIVATE_KEY: z.string(),
 
-    PRIVATE_KEY: z.string()
+    // AUTH
+    AUTH_SECRET: z.string(),
+
+    AUTH_GITHUB_CLIENT_ID: z.string(),
+    AUTH_GITHUB_CLIENT_SECRET: z.string(),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string(),
-    NEXT_PUBLIC_ENV: z.string()
+    NEXT_PUBLIC_ENV: z.string(),
   },
   runtimeEnv: {
     POSTGRES_URL: process.env.POSTGRES_URL,
@@ -28,6 +34,14 @@ export const env = createEnv({
     POSTGRES_HOST: process.env.POSTGRES_HOST,
     POSTGRES_DATABASE: process.env.POSTGRES_DATABASE,
 
-    PRIVATE_KEY: process.env.PRIVATE_KEY
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_ENV: process.env.NEXT_PUBLIC_ENV,
+    PRIVATE_KEY: process.env.PRIVATE_KEY,
+
+    // AUTH
+    AUTH_SECRET: process.env.AUTH_SECRET,
+
+    AUTH_GITHUB_CLIENT_ID: process.env.AUTH_GITHUB_CLIENT_ID,
+    AUTH_GITHUB_CLIENT_SECRET: process.env.AUTH_GITHUB_CLIENT_SECRET,
   },
 });
