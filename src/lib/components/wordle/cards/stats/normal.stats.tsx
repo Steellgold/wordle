@@ -6,25 +6,45 @@ import { Badge } from "@/lib/components/ui/badge";
 import { Suspense } from "react";
 import { Skeleton } from "@/lib/components/ui/skeleton";
 import { Button } from "@/ui/button";
-import { HelpCircle, Lock, ShoppingBag } from "lucide-react";
+import { ArrowRight, HelpCircle, ShoppingBag } from "lucide-react";
 import { Separator } from "@/ui/separator";
 import { auth } from "@/auth";
 import { db } from "@/lib/utils/prisma";
 import { Locked } from "@/lib/components/locked";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { Game } from "@prisma/client";
 
 export const HomeNormalStats: NPAsyncComponent = async() => {
   const session = await auth();
   
   const user = !session ? null : await db.user.findUnique({
     where: { id: session?.user?.id ?? "" },
-    include: {
-      games: {
-        where: {
-          type: "SOLO"
-        }
-      }
-    }
+    include: { games: { where: { type: "SOLO" } } }
   })
+
+  const alreadyGameOpened: Game | null = user?.games.find(game => game.isLive) ?? null;
+
+  const createGame = async() => {
+    "use server";
+    
+    const session = await auth();
+    if (!session) return;
+
+    const game = await db.game.create({
+      data: {
+        id: Math.random().toString(36).substring(7),
+        type: "SOLO",
+        isLive: true,
+        user: { connect: { id: session.user?.id } },
+        categoryId: "general",
+        result: "UNKNOWN",
+        word: "rouge",
+      }
+    });
+
+    throw redirect(`/${game.id}`);
+  }
 
   const totalWins = (user?.games ?? []).filter(game => game.result == "WORDLE_WIN").length || 0;
   const totalLoses = (user?.games ?? []).filter(game => game.result == "WORDLE_LOSE" || game.result == "WORDLE_ABORT").length || 0;
@@ -72,14 +92,14 @@ export const HomeNormalStats: NPAsyncComponent = async() => {
                 <AlertDescription className="flex flex-col">
                   <div>
                     <Badge variant={"outline"}>{totalWins} wins</Badge>
-                    {percentageWins > 0 && <>You have a <Badge variant={"outline"}>{percentageWins.toFixed(2)}%</Badge> win rate</>}
+                    {percentageWins > 0 && <>&nbsp;for a <Badge variant={"outline"}>{percentageWins.toFixed(2)}%</Badge> win rate</>}
                   </div>
                       
                   <Separator className="my-2 w-full" />
 
                   <div>
                     <Badge variant={"outline"}>{totalLoses} loses</Badge>
-                    {percentageLoses > 0 && <>So far you have a <Badge variant={"outline"}>{percentageLoses.toFixed(2)}%</Badge> lose rate</>}
+                    {percentageLoses > 0 && <>&nbsp;you have a <Badge variant={"outline"}>{percentageLoses.toFixed(2)}%</Badge> lose rate</>}
                   </div>
                 </AlertDescription>
               </Alert>
@@ -111,27 +131,29 @@ export const HomeNormalStats: NPAsyncComponent = async() => {
             <CardDescription>Start a new game, complete quests and earn coins</CardDescription>
           </CardHeader>
 
-          <CardContent>
-            {session ? (
+          {alreadyGameOpened && (
+            <CardContent>
               <Alert>
-                <AlertTitle className="mb-2.5">Quests</AlertTitle>
-                <div className="flex flex-col gap-2">
-                  <AlertDescription>
-                    <Badge variant={"outline"}>3/5</Badge> games wins to complete
-                  </AlertDescription>
+                <AlertTitle>Game in progress</AlertTitle>
+                <AlertDescription>You have a game in progress, you can&apos;t start a new one</AlertDescription>
 
-                  <AlertDescription>
-                    <Badge variant={"outline"}>1/5</Badge> games wins in less than 5 minutes
-                  </AlertDescription>
-                </div>
+                <Button variant={"default"} asChild className="mt-1.5 w-full">
+                  <Link href={`/${alreadyGameOpened.id}`}>
+                    Open game <ArrowRight size={13} className="ml-1" />
+                  </Link>
+                </Button>
               </Alert>
-            ) : (
-              <Locked title={"quests"} />
-            )}
-          </CardContent>
+            </CardContent>
+          )}
 
           <CardFooter className="gap-2">
-            <Button className="w-full" variant={"default"}>Play now {session ? "🔥" : "🧑‍🦯"}</Button>
+            <form className="w-full" action={createGame}>
+              <Button
+                className="w-full"
+                variant={"default"}
+                disabled={alreadyGameOpened != null}
+              >Play now {session ? "🔥" : "🧑‍🦯"}</Button>
+            </form>
             <Button variant={"secondary"} disabled>
               <HelpCircle size={13} className="mr-1" />
               How to play
