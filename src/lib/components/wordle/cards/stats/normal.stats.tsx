@@ -1,7 +1,7 @@
 import { NPAsyncComponent, NPComponent } from "@/components/utils/component";
 import { CustomCard } from "@/ui/custom-card";
-import { CardContent, CardDescription, CardHeader, CardTitle } from "@/ui/card";
-import { Alert, AlertDescription } from "@/ui/alert";
+import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/ui/alert";
 import { Badge } from "@/lib/components/ui/badge";
 import { Suspense } from "react";
 import { Skeleton } from "@/lib/components/ui/skeleton";
@@ -36,8 +36,8 @@ export const HomeNormalStats: NPAsyncComponent = async() => {
   const mostPlayedCategory = categories.sort((a, b) => categories.filter(v => v === a).length - categories.filter(v => v === b).length).pop();
 
   return (
-    <div className="flex flex-col lg:flex-row gap-4 w-full">
-      <CustomCard noHover className="lg:w-1/2">
+    <div className="flex flex-wrap -mx-2">
+      <CustomCard noHover className="px-2 w-full md:w-1/2">
         <CardHeader>
           <CardTitle>Statistics</CardTitle>
           <CardDescription>Check your statistics for this game mode</CardDescription>
@@ -47,9 +47,9 @@ export const HomeNormalStats: NPAsyncComponent = async() => {
           <Alert>
             <AlertDescription className="flex justify-between items-center">
               <div className="flex items-center gap-1">
-                You have
-                <Badge variant={"outline"} className="ml-1">{user.coins}&nbsp;🪙</Badge>
+                You have <Badge variant={"outline"} className="ml-1">{user.coins}&nbsp;🪙</Badge>
               </div>
+              
               <Button variant={"secondary"} size={"realSm"} disabled>
                 <ShoppingBag size={13} className="mr-1" />
                 Open shop
@@ -57,7 +57,7 @@ export const HomeNormalStats: NPAsyncComponent = async() => {
             </AlertDescription>
           </Alert>
 
-          <Separator className="my-1 w-full" />
+          <Separator className="my-4 w-full" />
 
           <Alert>
             <AlertDescription>
@@ -69,12 +69,24 @@ export const HomeNormalStats: NPAsyncComponent = async() => {
           </Alert>
 
           <Alert>
-            <AlertDescription className="flex justify-between">
-              <Badge variant={"success"}>{totalWins} wins {totalWins >= 1 && `(${percentageWins}%)`}</Badge>
-
-              <Separator className="my-3 w-4/12" />
-
-              <Badge variant={"fail"}>{totalLoses} loses {totalLoses >= 1 && `(${percentageLoses}%)`}</Badge>
+            <AlertDescription className="flex flex-col">
+              <div>
+                <Badge variant={"outline"}>{totalWins} wins</Badge>
+                {percentageWins > 0 && <>
+                  You have a <Badge variant={"outline"}>{percentageWins.toFixed(2)}%</Badge> win rate
+                  </>
+                }
+              </div>
+              
+              <Separator className="my-2 w-full" />
+              
+              <div>
+                <Badge variant={"outline"}>{totalLoses} loses</Badge>
+                {percentageLoses > 0 && <>
+                  So far you have a <Badge variant={"outline"}>{percentageLoses.toFixed(2)}%</Badge> lose rate
+                  </>
+                }
+              </div>
             </AlertDescription>
           </Alert>
 
@@ -92,6 +104,31 @@ export const HomeNormalStats: NPAsyncComponent = async() => {
             </Alert>
           )}
         </CardContent>
+      </CustomCard>
+      <CustomCard noHover className="px-2 w-full md:w-1/2">
+        <CardHeader>
+          <CardTitle>🕹️ Play</CardTitle>
+          <CardDescription>Start a new game, complete quests and earn coins</CardDescription>
+        </CardHeader>
+
+        <CardContent>
+          <Alert>
+            <AlertTitle className="mb-2.5">Quests</AlertTitle>
+            <div className="flex flex-col gap-2">
+              <AlertDescription>
+                <Badge variant={"outline"}>3/5</Badge> games wins to complete
+              </AlertDescription>
+
+              <AlertDescription>
+                <Badge variant={"outline"}>1/5</Badge> games wins in less than 5 minutes
+              </AlertDescription>
+            </div>
+          </Alert>
+        </CardContent>
+
+        <CardFooter>
+          <Button className="w-full" variant={"default"} size={"sm"}>Play now</Button>
+        </CardFooter>
       </CustomCard>
     </div>
   )
