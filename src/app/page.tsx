@@ -1,11 +1,14 @@
 import { ReactElement } from "react";
 import { auth } from "../auth";
-import { WordleLayout } from "@/lib/components/wordle/layout";
+import { WordleLayout } from "@/components/wordle/layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs";
-import { Settings2, User } from "lucide-react";
-import { Separator } from "@/lib/components/ui/separator";
+import { User } from "lucide-react";
+import { Separator } from "@/ui/separator";
 import Image from "next/image";
-import { HomeNormalStats } from "@/lib/components/wordle/cards/stats/normal.stats";
+import { HomeNormalStats } from "@/components/wordle/cards/stats/normal.stats";
+import { CustomCard } from "@/ui/custom-card";
+import { CardDescription, CardFooter, CardHeader, CardTitle } from "@/ui/card";
+import { LoginButton } from "@/components/wordle/cards/button.login";
 
 const Wordle = async(): Promise<ReactElement> => {
   const session = await auth();
@@ -13,7 +16,10 @@ const Wordle = async(): Promise<ReactElement> => {
   return (
     <WordleLayout>
       <Tabs defaultValue="normal">
-        <TabsList className="flex justify-center">
+        <TabsList className="flex justify-center overflow-x-auto">
+          <TabsTrigger className="block sm:hidden" disabled value=""></TabsTrigger>
+          <TabsTrigger className="block sm:hidden" disabled value=""></TabsTrigger>
+          <TabsTrigger className="block sm:hidden" disabled value=""></TabsTrigger>
           <TabsTrigger value="normal">Normal</TabsTrigger>
           <TabsTrigger value="ranked" disabled>Ranked</TabsTrigger>
           <TabsTrigger value="daily" disabled>Daily</TabsTrigger>
@@ -39,20 +45,37 @@ const Wordle = async(): Promise<ReactElement> => {
           </TabsTrigger>
         </TabsList>
 
-          <Separator className="my-3" />
+        <Separator className="my-3" />
           
-          <TabsContent value="normal">
-            <HomeNormalStats />
-          </TabsContent>
+        <TabsContent value="normal">
+          <HomeNormalStats />
+        </TabsContent>
 
-          <TabsContent value="ranked"></TabsContent>
+        <TabsContent value="ranked"></TabsContent>
 
-          <TabsContent value="daily"></TabsContent>
+        <TabsContent value="daily"></TabsContent>
 
-          <TabsContent value="duo"></TabsContent>
+        <TabsContent value="duo"></TabsContent>
 
-          <TabsContent value="settings"></TabsContent>
-        </Tabs>
+        <TabsContent value="settings"></TabsContent>
+      </Tabs>
+
+      <div className="flex flex-col gap-4 md:flex-row mt-3">
+        {!session ? (
+          <CustomCard noHover className="px-2 w-full md:w-1/2">
+            <CardHeader>
+              <CardTitle>Somethings missing</CardTitle>
+              <CardDescription>Sign in to earn coins, play ranked games and more</CardDescription>
+            </CardHeader>
+
+            <CardFooter className="flex gap-2">
+              <LoginButton provider={"GitHub"} mini />
+              <LoginButton provider={"Google"} mini />
+              <LoginButton provider={"Discord"} mini />
+            </CardFooter>
+          </CustomCard>
+        ) : <LoginButton logout />}
+      </div>
     </WordleLayout>
   )
 };
