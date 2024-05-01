@@ -6,9 +6,7 @@ import { User } from "lucide-react";
 import { Separator } from "@/ui/separator";
 import Image from "next/image";
 import { HomeNormalStats } from "@/components/wordle/cards/stats/normal.stats";
-import { CustomCard } from "@/ui/custom-card";
-import { CardDescription, CardFooter, CardHeader, CardTitle } from "@/ui/card";
-import { LoginButton } from "@/components/wordle/cards/button.login";
+import { HomeSettings } from "@/lib/components/wordle/cards/settings/settings";
 
 const Wordle = async(): Promise<ReactElement> => {
   const session = await auth();
@@ -16,14 +14,11 @@ const Wordle = async(): Promise<ReactElement> => {
   return (
     <WordleLayout>
       <Tabs defaultValue="normal">
-        <TabsList className="flex justify-center overflow-x-auto">
-          <TabsTrigger className="block sm:hidden" disabled value=""></TabsTrigger>
-          <TabsTrigger className="block sm:hidden" disabled value=""></TabsTrigger>
-          <TabsTrigger className="block sm:hidden" disabled value=""></TabsTrigger>
+        <TabsList className="flex justify-center">
           <TabsTrigger value="normal">Normal</TabsTrigger>
-          <TabsTrigger value="ranked" disabled>Ranked</TabsTrigger>
-          <TabsTrigger value="daily" disabled>Daily</TabsTrigger>
-          <TabsTrigger value="duo" disabled>Duo</TabsTrigger>
+          <TabsTrigger disabled value="ranked">Ranked</TabsTrigger>
+          <TabsTrigger disabled value="daily">Daily</TabsTrigger>
+          <TabsTrigger disabled value="duo">Duo</TabsTrigger>
           <TabsTrigger value="settings">
             {session ? (
               <>
@@ -39,7 +34,7 @@ const Wordle = async(): Promise<ReactElement> => {
             ) : (
               <>
                 <User size={16} />&nbsp;
-                Settings
+                Login
               </>
             )}
           </TabsTrigger>
@@ -57,25 +52,10 @@ const Wordle = async(): Promise<ReactElement> => {
 
         <TabsContent value="duo"></TabsContent>
 
-        <TabsContent value="settings"></TabsContent>
+        <TabsContent value="settings">
+          <HomeSettings />
+        </TabsContent>
       </Tabs>
-
-      <div className="flex flex-col gap-4 md:flex-row mt-3">
-        {!session ? (
-          <CustomCard noHover className="px-2 w-full md:w-1/2">
-            <CardHeader>
-              <CardTitle>Somethings missing</CardTitle>
-              <CardDescription>Sign in to earn coins, play ranked games and more</CardDescription>
-            </CardHeader>
-
-            <CardFooter className="flex gap-2">
-              <LoginButton provider={"GitHub"} mini />
-              <LoginButton provider={"Google"} mini />
-              <LoginButton provider={"Discord"} mini />
-            </CardFooter>
-          </CustomCard>
-        ) : <LoginButton logout />}
-      </div>
     </WordleLayout>
   )
 };
