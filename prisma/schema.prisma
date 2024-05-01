@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
 }
 
 model User {
@@ -74,7 +75,7 @@ enum GAME_RESULT {
 }
 
 model Game {
-  id     String      @id
+  id     String      @id @default(cuid())
   type   GAME_TYPE
   result GAME_RESULT
 
