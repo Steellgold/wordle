@@ -7,6 +7,9 @@ export const env = createEnv({
     
     PRIVATE_KEY: z.string(),
 
+    UPSTASH_REDIS_REST_URL: z.string(),
+    UPSTASH_REDIS_REST_TOKEN: z.string(),
+
     // AUTH
     AUTH_SECRET: z.string(),
 
@@ -25,6 +28,9 @@ export const env = createEnv({
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_ENV: process.env.NEXT_PUBLIC_ENV,
     PRIVATE_KEY: process.env.PRIVATE_KEY,
+
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
 
     // AUTH
     AUTH_SECRET: process.env.AUTH_SECRET,
