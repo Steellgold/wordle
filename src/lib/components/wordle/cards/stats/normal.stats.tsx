@@ -1,4 +1,4 @@
-import { NPAsyncComponent, NPComponent } from "@/components/utils/component";
+import { NPAsyncComponent } from "@/components/utils/component";
 import { CustomCard } from "@/ui/custom-card";
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/ui/alert";
@@ -11,9 +11,9 @@ import { Separator } from "@/ui/separator";
 import { auth } from "@/auth";
 import { db } from "@/lib/utils/prisma";
 import { Locked } from "@/lib/components/locked";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Game } from "@prisma/client";
+import { CreateWordleButton } from "@/lib/components/wordle/create-button/create-button";
 
 export const HomeNormalStats: NPAsyncComponent = async() => {
   const session = await auth();
@@ -24,27 +24,6 @@ export const HomeNormalStats: NPAsyncComponent = async() => {
   })
 
   const alreadyGameOpened: Game | null = user?.games.find(game => game.isLive) ?? null;
-
-  const createGame = async() => {
-    "use server";
-    
-    const session = await auth();
-    if (!session) return;
-
-    const game = await db.game.create({
-      data: {
-        id: Math.random().toString(36).substring(7),
-        type: "SOLO",
-        isLive: true,
-        user: { connect: { id: session.user?.id } },
-        categoryId: "general",
-        result: "UNKNOWN",
-        word: "rouge",
-      }
-    });
-
-    throw redirect(`/${game.id}`);
-  }
 
   const totalWins = (user?.games ?? []).filter(game => game.result == "WORDLE_WIN").length || 0;
   const totalLoses = (user?.games ?? []).filter(game => game.result == "WORDLE_LOSE" || game.result == "WORDLE_ABORT").length || 0;
@@ -147,13 +126,7 @@ export const HomeNormalStats: NPAsyncComponent = async() => {
           )}
 
           <CardFooter className="gap-2">
-            <form className="w-full" action={createGame}>
-              <Button
-                className="w-full"
-                variant={"default"}
-                disabled={alreadyGameOpened != null}
-              >Play now {session ? "🔥" : "🧑‍🦯"}</Button>
-            </form>
+            <CreateWordleButton alreadyGameOpened={alreadyGameOpened != null} session={session} gameType={"SOLO"} />
             <Button variant={"secondary"} disabled>
               <HelpCircle size={13} className="mr-1" />
               How to play

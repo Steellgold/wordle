@@ -17,6 +17,6 @@ export const handleAbandon = async({ gameId }: { gameId: string }) => {
 
   await db.game.update({
     where: { id: gameId },
-    data: { result: "WORDLE_ABORT" }
+    data: { result: "WORDLE_ABORT", isLive: false }
   });
 };
