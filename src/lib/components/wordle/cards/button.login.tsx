@@ -3,43 +3,66 @@
 import { Button } from "@/ui/button";
 import { Component } from "@/components/utils/component";
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
-import { signIn } from "next-auth/react";
-import { FaGoogle, FaGithub, FaDiscord } from "react-icons/fa";
-import { SiZoom  } from "react-icons/si";
+import { Loader2, LogOut } from "lucide-react";
+import { signIn, signOut } from "next-auth/react";
+import { FaGithub, FaDiscord } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 
 type LoginButtonProps = {
-  provider: "GitHub" | "Google" | "Zoom" | "Discord"
+  provider?: "GitHub" | "Google" | "Discord";
+  logout?: boolean;
+  mini?: boolean;
 }
 
-export const LoginButton: Component<LoginButtonProps> = ({ provider }) => {
+export const LoginButton: Component<LoginButtonProps> = ({ provider, logout, mini }) => {
   const [loading, setLoading] = useState(false);
+  if (!provider && !logout) return <></>;
   
-  const onClick = () => {
+  const onClick = (action: "login" | "logout") => {
     if (loading) return;
+    setLoading(true);
 
-    signIn("github")
-      .then(() => setLoading(false))
-      .catch(() => setLoading(false));
+    if (action === "login") {
+      signIn(provider === "GitHub" ? "github" : provider === "Google" ? "google" : "discord")
+        .then(() => setLoading(true))
+        .catch(() => setLoading(false));
+    } else {
+      signOut()
+        .then(() => setLoading(false))
+        .catch(() => setLoading(true));
+    }
   }
 
   return (
     <Button
-      onClick={onClick}
-      disabled={loading}
-      className="flex items-center gap-2"
+      onClick={() => onClick(logout ? "logout" : "login")}
+      disabled={loading || (!logout && !provider) || provider == "Google"}
+      className="flex items-center gap-2 w-full"
+      variant={provider === "GitHub" ? "github" : provider === "Discord" ? "discord" : "default"}
     >
       {loading ?
-        <Loader2 size={16} className="animate-spin mr-2" />
+        <>
+          {provider !== "Discord" && <Loader2 size={16} className="animate-spin mr-2" />}
+          {provider == "Discord" && <FaDiscord size={16} className="mr-2 animate-spinner" />}
+        </>
       : (
         <>
-          {provider === "GitHub" && <FaGithub className="text-[#333]" size={16} />}
-          {provider === "Google" && <FaGoogle className="text-[#DB4437]" size={16} />}
-          {provider === "Zoom" && <SiZoom className="text-[#2D8CFF]" size={16} />}
-          {provider === "Discord" && <FaDiscord className="text-[#7289DA]" size={16} />}
+          {!logout ? (
+            <>
+              {provider === "GitHub" && <FaGithub className="text-[#fff]" size={16} />}
+              {provider === "Google" && <FcGoogle size={16} />}
+              {provider === "Discord" && <FaDiscord className="text-[#fff]" size={16} />}
+            </>
+          ) : (
+            <LogOut className="text-[#333]" size={16} />
+          )}
         </>
       )}
-      Login with {provider}
+      {logout ? "Logout" : (
+        <>
+          {!mini && <>Login with {provider}</>}
+        </>
+      )}
     </Button>
   )
 }
