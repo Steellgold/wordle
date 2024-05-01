@@ -28,6 +28,9 @@ const buttonVariants = cva(
         duo: "bg-[#c4cff6] text-black shadow-sm hover:bg-[#a7b4e7]/90",
         
         shop: "bg-[#f9c23c] text-black shadow-sm hover:bg-[#eeb13c]/90",
+
+        discord: "bg-[#5865f2] text-white shadow-sm hover:bg-[#4b5bd3]/90",
+        github: "bg-[#333] text-white shadow-sm hover:bg-[#2f2f2f]/90",
       },
       size: {
         default: "h-9 px-4 py-2",
