@@ -10,7 +10,7 @@ type BoardProps = {
   };
 };
 
-export const Page: Component<BoardProps> = ({ params }) => {
+const Page: Component<BoardProps> = ({ params }) => {
   const [isLive, setIsLive] = useState(true);
 
   return (
