@@ -10,7 +10,7 @@ type BoardProps = {
   };
 };
 
-export const Board: Component<BoardProps> = ({ params }) => {
+export const Page: Component<BoardProps> = ({ params }) => {
   const [isLive, setIsLive] = useState(true);
 
   return (
@@ -29,4 +29,4 @@ export const Board: Component<BoardProps> = ({ params }) => {
   );
 };
 
-export default Board;
+export default Page;
