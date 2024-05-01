@@ -40,12 +40,7 @@ export const LoginButton: Component<LoginButtonProps> = ({ provider, logout, min
       className="flex items-center gap-2 w-full"
       variant={provider === "GitHub" ? "github" : provider === "Discord" ? "discord" : "default"}
     >
-      {loading ?
-        <>
-          {provider !== "Discord" && <Loader2 size={16} className="animate-spin mr-2" />}
-          {provider == "Discord" && <FaDiscord size={16} className="mr-2 animate-spinner" />}
-        </>
-      : (
+      {loading ? <Loader2 size={16} className="animate-spin mr-2" /> : (
         <>
           {!logout ? (
             <>
