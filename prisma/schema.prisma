@@ -72,11 +72,13 @@ enum GAME_RESULT {
   WORDLE_WIN
   WORDLE_LOSE
   WORDLE_ABORT
+  UNKNOWN
 }
 
 model Game {
   id     String      @id @default(cuid())
   type   GAME_TYPE
+  isLive Boolean     @default(false)
   result GAME_RESULT
 
   createdAt DateTime  @default(now())
