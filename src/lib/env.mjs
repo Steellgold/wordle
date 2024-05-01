@@ -10,8 +10,10 @@ export const env = createEnv({
     // AUTH
     AUTH_SECRET: z.string(),
 
-    AUTH_GITHUB_CLIENT_ID: z.string(),
-    AUTH_GITHUB_CLIENT_SECRET: z.string(),
+    AUTH_GITHUB_ID: z.string(),
+    AUTH_GITHUB_SECRET: z.string(),
+    AUTH_DISCORD_ID: z.string(),
+    AUTH_DISCORD_SECRET: z.string(),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string(),
@@ -27,7 +29,9 @@ export const env = createEnv({
     // AUTH
     AUTH_SECRET: process.env.AUTH_SECRET,
 
-    AUTH_GITHUB_CLIENT_ID: process.env.AUTH_GITHUB_CLIENT_ID,
-    AUTH_GITHUB_CLIENT_SECRET: process.env.AUTH_GITHUB_CLIENT_SECRET,
+    AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
+    AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
+    AUTH_DISCORD_ID: process.env.AUTH_GITHUB_ID,
+    AUTH_DISCORD_SECRET: process.env.AUTH_GITHUB_SECRET,
   },
 });
