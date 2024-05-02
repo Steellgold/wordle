@@ -1,0 +1,8 @@
+-- AlterEnum
+ALTER TYPE "GAME_RESULT" ADD VALUE 'WORDLE_TIMEOUT';
+
+-- AlterTable
+ALTER TABLE "Game" ADD COLUMN     "lines" JSONB NOT NULL DEFAULT '[]';
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "jokerCount" INTEGER NOT NULL DEFAULT 1;
