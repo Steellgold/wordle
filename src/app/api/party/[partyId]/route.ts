@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { env } from "@/lib/env.mjs";
+import { getEncryptedText } from "@/lib/utils/cryptr";
 import { db } from "@/lib/utils/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -18,5 +19,8 @@ export const GET = async (req: NextRequest, { params }: Party) => {
   const party = await db.game.findUnique({ where: { id: partyId, userId: session.user?.id ?? "" } });
   if (!party) return NextResponse.redirect(env.NEXT_PUBLIC_APP_URL);
 
-  return NextResponse.json({ party });
+  return NextResponse.json({
+    ...party,
+    word: getEncryptedText(party.word)
+  });
 }
