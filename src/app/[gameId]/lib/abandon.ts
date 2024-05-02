@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth";
 import { db } from "@/lib/utils/prisma";
+import { redirect } from "next/navigation";
 
 export const handleAbandon = async({ gameId }: { gameId: string }) => {
   "use server";
@@ -19,4 +20,6 @@ export const handleAbandon = async({ gameId }: { gameId: string }) => {
     where: { id: gameId },
     data: { result: "WORDLE_ABORT", isLive: false }
   });
+
+  redirect("/");
 };
