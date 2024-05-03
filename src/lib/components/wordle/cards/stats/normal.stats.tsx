@@ -26,7 +26,11 @@ export const HomeNormalStats: NPAsyncComponent = async() => {
   const alreadyGameOpened: Game | null = user?.games.find(game => game.isLive) ?? null;
 
   const totalWins = (user?.games ?? []).filter(game => game.result == "WORDLE_WIN").length || 0;
-  const totalLoses = (user?.games ?? []).filter(game => game.result == "WORDLE_LOSE" || game.result == "WORDLE_ABORT").length || 0;
+  const totalLoses = (user?.games ?? []).filter(
+    game => game.result == "WORDLE_LOSE" ||
+    game.result == "WORDLE_ABORT" ||
+    game.result == "WORDLE_TIMEOUT"
+  ).length || 0;
   const percentageWins = totalWins == 0 ? 0 : (totalWins / (user?.games ?? []).length * 100);
   const percentageLoses = totalLoses == 0 ? 0 : (totalLoses / (user?.games ?? []).length * 100);
 
