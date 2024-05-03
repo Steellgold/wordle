@@ -113,16 +113,14 @@ const Page: Component<BoardProps> = ({ params }) => {
           <p>Your party has been going on for&nbsp;
           <strong className={cn({
             "text-red-400 animate-pulse":
-              dayJS().diff(dayJS(data?.createdAt), "minute") === 0 &&
-              dayJS().diff(dayJS(data?.createdAt), "seconds") % 60 >= 5
-              && dayJS().diff(dayJS(data?.createdAt), "seconds") % 60 <= 20,
+              dayJS().diff(dayJS(data?.createdAt), "minute") === 5 &&
+              dayJS().diff(dayJS(data?.createdAt), "seconds") % 60 === 0
           })}>
             {dayJS().diff(dayJS(data?.createdAt), "minute")} minutes</strong> and&nbsp;
           <strong className={cn({
             "text-red-400 animate-pulse":
-              dayJS().diff(dayJS(data?.createdAt), "minute") === 0 &&
-              dayJS().diff(dayJS(data?.createdAt), "seconds") % 60 >= 5
-              && dayJS().diff(dayJS(data?.createdAt), "seconds") % 60 <= 20,
+              dayJS().diff(dayJS(data?.createdAt), "minute") === 5 &&
+              dayJS().diff(dayJS(data?.createdAt), "seconds") % 60 === 0
           })}>
             {dayJS().diff(dayJS(data?.createdAt), "seconds") % 60} seconds</strong>
           </p>
