@@ -32,7 +32,6 @@ const Page: Component<BoardProps> = ({ params }) => {
   const [data, setData] = useState<Game | null>(null);
 
   const [_, setTimer] = useState<string>(dayJS().toISOString());
-  const [countdown, setCountdown] = useState<number>(11);
 
   const router = useRouter()
 
@@ -55,11 +54,7 @@ const Page: Component<BoardProps> = ({ params }) => {
     const interval = setInterval(() => {
       setTimer(dayJS().toISOString());
 
-      if (dayJS().diff(dayJS(data?.createdAt), "minute") === 0 && dayJS().diff(dayJS(data?.createdAt), "seconds") % 60 === 5) {
-        setCountdown(countdown - 1);
-      } else if (countdown > 0 && countdown !== 11) {
-        setCountdown(countdown - 1);
-      } else if (countdown === 0) {
+      if (dayJS().diff(dayJS(data?.createdAt), "minute") === 5 && dayJS().diff(dayJS(data?.createdAt), "seconds") % 60 === 0) {
         setEndingReason("WORDLE_TIMEOUT");
         closeGame()
           .then(() => {
@@ -71,7 +66,7 @@ const Page: Component<BoardProps> = ({ params }) => {
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [data, countdown, params.gameId, endingReason, router]);
+  }, [data, params.gameId, endingReason, router]);
 
   useEffect(() => {
     setIsLoading(true);
