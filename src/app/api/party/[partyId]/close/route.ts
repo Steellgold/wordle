@@ -18,7 +18,7 @@ export const POST = async (req: NextRequest, { params }: Party) => {
 
   const { partyId } = params;
 
-  const party = await db.game.findUnique({ where: { id: partyId, userId: session.user?.id ?? "" } });
+  const party = await db.game.findUnique({ where: { id: partyId, userId: session.user?.id ?? "", isLive: true } });
   if (!party) return NextResponse.redirect(env.NEXT_PUBLIC_APP_URL);
 
   const schema = z.object({ result: z.nativeEnum(GAME_RESULT) }).safeParse(await req.json());
