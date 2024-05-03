@@ -41,7 +41,7 @@ export const Categories: {
 export type Line = Letter[];
 
 export type Letter = {
-  letter: string;
+  value: string;
   status: LetterStatus;
   isJoker?: boolean;
 };
