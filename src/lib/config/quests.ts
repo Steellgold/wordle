@@ -1,4 +1,4 @@
-import { WordleQuest } from "@/lib/types/wordle.quest.type";
+import { WordleQuest } from "@/lib/types/quest.type";
 
 export const wordleQuests: WordleQuest[] = [
   {
