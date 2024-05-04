@@ -11,7 +11,7 @@ type TimerProps = {
 
 export const Timer: Component<TimerProps> = ({ onEnd }) => {
   const [intervalValue] = useState<number>(1000)
-  const [count, { startCountdown, stopCountdown, resetCountdown }] = useCountdown({ countStart: 10, intervalMs: intervalValue })
+  const [count, { startCountdown, stopCountdown, resetCountdown }] = useCountdown({ countStart: 600, intervalMs: intervalValue })
   
   const { width } = useWindowSize();
 
