@@ -3,4 +3,6 @@ export type Hint = {
   name: string;
   description: string;
   icon: string;
+  safeLevel: number;
+  cost: number;
 };
