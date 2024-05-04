@@ -20,8 +20,8 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
 
-        hint: "bg-[#853290] text-white shadow-sm hover:bg-[#853290]/90",
-        hintDisabled: "bg-[#501e57] text-white shadow-sm cursor-not-allowed",
+        hint: "bg-[#1e351a] text-white shadow-sm hover:bg-[#1e351a]/90",
+        hintDisabled: "bg-[#1e351a] text-white shadow-sm cursor-not-allowed",
         
         ranked: "bg-[#e0dc77] text-black shadow-sm hover:bg-[#c5c171]/90",
         daily: "bg-[#f4c3f6] text-black shadow-sm hover:bg-[#daa8e5]/90",
