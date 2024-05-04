@@ -9,7 +9,7 @@ type PartyStore = {
   incrLine: () => void;
   decrLine: () => void;
 
-  init: (lines: Line[]) => void;
+  init: (lines: Line[]) => Promise<void>;
 
   addLetter: (letter: string) => void;
   removeLetter: () => void;
@@ -32,7 +32,10 @@ export const useCurrentParty = create(
       incrLine: () => set((state) => ({ currentLineIndex: state.currentLineIndex + 1 })),
       decrLine: () => set((state) => ({ currentLineIndex: state.currentLineIndex - 1 })),
 
-      init: (lines) => set({ lines, currentLineIndex: 0 }),
+      init: (lines) => {
+        set({ lines, currentLineIndex: 0 })
+        return Promise.resolve();
+      },
 
       addLetter: (letter) => {
         const lines: Line[] = get().lines;
