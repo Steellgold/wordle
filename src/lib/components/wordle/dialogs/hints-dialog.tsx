@@ -8,6 +8,7 @@ import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, Dr
 import { Hint } from "@/lib/types/hints.type";
 import { AI, Joker, Time } from "@/lib/config/hints";
 import { cn } from "@/lib/utils";
+import { Badge } from "../../ui/badge";
 
 type HintsDialog = {
   isConnected?: boolean;
@@ -74,8 +75,8 @@ const Content: Component<{ mobile?: boolean }> = ({ mobile = false }) => {
         "p-5": mobile
       })}>
         <Card type={Joker} />
-        <Card type={AI} />
         <Card type={Time} />
+        <Card type={AI} />
       </div>
     </div>
   );
@@ -85,16 +86,27 @@ const Card: Component<{ type: Hint }> = ({ type }) => {
   return (
     <CustomCard>
       <div className="flex items-center p-3">
-        <Image src={`/_static/emojis/${
-            type.id === "JOKER" ? "joker-card.png"
-              : type.id === "AI" ? "human-and-robot-handshake.png"
-                : type.id === "TIME" ? "more-time-clock-card.png"
-                : "joker-card.png"
-        }`} width={72} height={72} alt={type.name} />
+        <Image src={`/_static/emojis/${type.icon}`} width={72} height={72} alt={type.name} />
         <div className="flex flex-col ml-3">
           <h3 className="text-xl font-semibold">{type.name}</h3>
           <p className="text-muted-foreground mt-2">{type.description}</p>
-          <p className="text-muted-foreground/50 mt-2">Number of hint jokers left: <strong>{Math.floor(Math.random() * 3)}</strong></p>
+          <div className="flex gap-2 mt-3">
+            <Badge variant={"outline"} className="text-muted-foreground">Safe Level:&nbsp;
+              <span className={cn({
+                "text-green-500": type.safeLevel == 100,
+                "text-orange-500": type.safeLevel < 100,
+                "text-yellow-500": type.safeLevel < 60,
+                "text-red-500": type.safeLevel < 30,
+                "text-gray-500": !type.safeLevel
+              })}>
+                {type.safeLevel}%
+              </span>
+            </Badge>
+
+            <Badge variant={"outline"} className="text-muted-foreground">Cost:&nbsp;
+              <span className="text-green-500">{type.cost} 🪙</span>
+            </Badge>
+          </div>
         </div>
       </div>
     </CustomCard>
