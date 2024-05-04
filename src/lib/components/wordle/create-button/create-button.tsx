@@ -18,10 +18,10 @@ export const CreateWordleButton: Component<CreateWordleButtonProps> = ({ already
   const [loading, setLoading] = useState(false);
 
   return (
-    <form className="w-full" onSubmit={async(e) => {
+    <form className="w-full" onSubmit={(e) => {
       setLoading(true)
       e.preventDefault()
-      await createGame({ gameType, session })
+      createGame({ gameType, session })
     }}>
       <Button
         className="w-full"
