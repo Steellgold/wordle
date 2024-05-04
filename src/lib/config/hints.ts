@@ -3,20 +3,26 @@ import { Hint } from "../types/hints.type";
 export const Joker: Hint = {
   id: "JOKER",
   name: "Joker",
-  description: "This joker card reveals one of the letters in your word and its position",
-  icon: "joker-card"
+  description: "This joker reveals one letter of your word along with its exact position.",
+  icon: "joker-card.png",
+  safeLevel: 100,
+  cost: 50
 };
 
 export const AI: Hint = {
   id: "AI",
   name: "AI",
-  description: "The AI will help you by generating a definition of your word, but be careful it may be recent or old, otherwise it would be too easy",
-  icon: "human-and-robot-handshake"
+  description: "The AI by generating a definition of your word. Be cautious, could be contemporary or outdated.",
+  icon: "metal-computer-brain-with-wires.png",
+  safeLevel: 75,
+  cost: 100
 };
 
 export const Time: Hint = {
   id: "TIME",
   name: "Time",
-  description: "Add additional time to your party, be careful this time is random and can be short or long, it's up to you to see if you want to take the risk of using this joker",
-  icon: "more-time-clock-card"
+  description: "Adds random additional time to your game. It’s up to you to decide if the risk is worth it.",
+  icon: "more-time-clock-card.png",
+  safeLevel: 50,
+  cost: 25
 };
