@@ -18,9 +18,7 @@ type HintsDialog = {
 export const HintsDialog: Component<HintsDialog & PropsWithChildren> = ({ isConnected = false, isMobile = false, children }) => {
   if (!isConnected) {
     return (
-      <p>
-        You need to see your hints!
-      </p>
+      <Button className="w-full" size={"default"} variant={"default"} disabled>Hints</Button>
     )
   }
 
@@ -32,7 +30,7 @@ export const HintsDialog: Component<HintsDialog & PropsWithChildren> = ({ isConn
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle>Hints</DrawerTitle>
+            <DrawerTitle>🕵️‍♂️ Hints</DrawerTitle>
             <DrawerDescription>You can use jokers to help you find the word, each joker has a specific use.</DrawerDescription>
             <DrawerClose />
           </DrawerHeader>
@@ -67,11 +65,11 @@ const Content: Component<{ mobile?: boolean }> = ({ mobile = false }) => {
   return (
     <div className="overflow-y-auto">
       {!mobile && <>
-        <h2 className="text-2xl font-semibold">Hints</h2>
+        <h2 className="text-2xl font-semibold">🕵️‍♂️ Hints</h2>
         <p className="text-muted-foreground mt-2">You can use jokers to help you find the word, each joker has a specific use.</p>
       </>}
 
-      <div className={cn("flex flex-col gap-4", {
+      <div className={cn("flex flex-col my-2 gap-4", {
         "p-5": mobile
       })}>
         <Card type={Joker} />
@@ -114,9 +112,5 @@ const Card: Component<{ type: Hint }> = ({ type }) => {
 }
 
 const Footer = (): ReactElement => {
-  return (
-    <Button>
-      No, thanks
-    </Button>
-  );
+  return <p className="text-muted-foreground text-xs">If cards are disabled, this means you don&apos;t have enough coins to use them.</p>
 }
