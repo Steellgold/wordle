@@ -2,17 +2,18 @@
 
 import { auth } from "@/auth";
 import { db } from "@/lib/utils/prisma";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export const handleAbandon = async({ gameId }: { gameId: string }) => {
   "use server";
 
   const session = await auth();
-  if (!session) return;
+  let userId: string | undefined = "";
+  if (session) userId = session.user?.id ?? "";
+  if (!session) userId = `guest${cookies().get("guestUserId")?.value}`;
 
-  const party = await db.game.findUnique({
-    where: { id: gameId, userId: session.user?.id ?? "" }
-  });
+  const party = await db.game.findUnique({ where: { id: gameId, userId, isLive: true } });
 
   if (!party) return;
 
