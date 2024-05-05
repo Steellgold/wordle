@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/lib/providers/theme-provider";
 import { auth } from "../auth";
 import { SessionProvider } from "next-auth/react";
 import { WordleDialog } from "@/lib/components/wordle/dialogs/first-visit-wordle.dialog";
+import { Toaster } from "sonner";
 
 const nunito = Nunito({ subsets: ["latin"] });
 
@@ -34,7 +35,8 @@ const Layout: AsyncComponent<PropsWithChildren> = async ({ children }) => {
         <SessionProvider session={session}>
           <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
             <body className={cn("bg-[#1A1A1A]", nunito.className)}>
-              <WordleDialog isConnected={session !== null} /> 
+              <WordleDialog /> 
+              <Toaster />
               {children}
             </body>
           </ThemeProvider>
