@@ -80,6 +80,9 @@ dependencies:
   clsx:
     specifier: ^2.1.1
     version: 2.1.1
+  cookie-muncher:
+    specifier: ^0.4.4
+    version: 0.4.4
   cryptr:
     specifier: ^6.3.0
     version: 6.3.0
@@ -116,6 +119,9 @@ dependencies:
   react-icons:
     specifier: ^5.1.0
     version: 5.1.0(react@18.3.1)
+  sonner:
+    specifier: ^1.4.41
+    version: 1.4.41(react-dom@18.3.1)(react@18.3.1)
   styled-components:
     specifier: ^6.1.8
     version: 6.1.8(react-dom@18.3.1)(react@18.3.1)
@@ -2856,6 +2862,10 @@ packages:
       - esbuild
       - markdown-wasm
       - supports-color
+    dev: false
+
+  /cookie-muncher@0.4.4:
+    resolution: {integrity: sha512-JVFNcz5Wq0w1gFSLu91Pw1ys1MPjkeX4ZY34f3PzCL07qoXaXG06DLdHGy6PUbIxyqGihvpSWObVeKfwz6ECiA==}
     dev: false
 
   /cookie@0.6.0:
@@ -5769,6 +5779,16 @@ packages:
   /slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
+
+  /sonner@1.4.41(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-uG511ggnnsw6gcn/X+YKkWPo5ep9il9wYi3QJxHsYe7yTZ4+cOd1wuodOUmOpFuXL+/RE3R04LczdNCDygTDgQ==}
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    dev: false
 
   /source-map-js@1.2.0:
     resolution: {integrity: sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==}
