@@ -14,3 +14,26 @@ export const minimize = (wLarge: string, wMobile: string, width: number) => {
 export const addZero = (i: number) => {
   return i < 10 ? `0${i}` : i;
 }
+
+export const normalizeText = (word: string): string => {
+  return word
+      .replace(/é/g, "e")
+      .replace(/è/g, "e")
+      .replace(/ê/g, "e")
+      .replace(/ë/g, "e")
+      .replace(/à/g, "a")
+      .replace(/â/g, "a")
+      .replace(/ä/g, "a")
+      .replace(/ç/g, "c")
+      .replace(/î/g, "i")
+      .replace(/ï/g, "i")
+      .replace(/ô/g, "o")
+      .replace(/ö/g, "o")
+      .replace(/ù/g, "u")
+      .replace(/û/g, "u")
+      .replace(/ü/g, "u")
+      .replace(/ÿ/g, "y")
+      .replace(/ñ/g, "n")
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .toUpperCase();
+}

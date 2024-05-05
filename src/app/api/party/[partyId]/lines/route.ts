@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { isValidWord } from "@/lib/components/wordle/utils/wordle.utils";
 import { env } from "@/lib/env.mjs";
 import { LetterStatus } from "@/lib/types/wordle.type";
+import { normalizeText } from "@/lib/utils";
 import { getDecryptedText } from "@/lib/utils/cryptr";
 import { dayJS } from "@/lib/utils/dayjs/day-js";
 import { db } from "@/lib/utils/prisma";
@@ -47,7 +48,7 @@ export const PUT = async (req: NextRequest, { params }: Party) => {
         lines.map((line) => line.map((entry) => ({
           value: entry.value, status: entry.status as LetterStatus
         }))),
-        party.word,
+        normalizeText(party.word).toLowerCase(),
         schema.data.currentLineIndex
       );
     }
@@ -55,7 +56,7 @@ export const PUT = async (req: NextRequest, { params }: Party) => {
     return line;
   });
 
-  if (currentWord == getDecryptedText(word)) {
+  if (currentWord == normalizeText(getDecryptedText(word)).toLocaleLowerCase()) {
     await db.game.update({
       where: { id: partyId },
       data: {
