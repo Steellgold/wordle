@@ -1,9 +1,9 @@
 "use client";
 
 import { Component } from "@/lib/components/utils/component";
-import { useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { useWindowSize } from 'usehooks-ts'
+import { useEventListener, useWindowSize } from 'usehooks-ts'
 import ReactConfetti from "react-confetti";
 import { WordleLayout } from "@/lib/components/wordle/layout";
 import { GAME_RESULT, Game } from "@prisma/client";
@@ -17,6 +17,8 @@ import { handleAbandon } from "./lib/abandon";
 import { Button } from "@/lib/components/ui/button";
 import { HintsDialog } from "@/lib/components/wordle/dialogs/hints-dialog";
 import { Timer } from "./lib/timer";
+import { Line } from "@/lib/types/wordle.type";
+import { z } from "zod";
 
 type BoardProps = {
   params: {
@@ -27,8 +29,10 @@ type BoardProps = {
 const Page: Component<BoardProps> = ({ params }) => {
   const { width, height } = useWindowSize();
 
-  const [isLoading, setIsLoading] = useState(false);
-  
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSending, setIsSending] = useState(false);
+  const [isConnected, setIsConnected] = useState<boolean | null>(null);
+
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [isEnding, setIsEnding] = useState(false);
   const [endingReason, setEndingReason] = useState<GAME_RESULT>("UNKNOWN");
@@ -37,39 +41,103 @@ const Page: Component<BoardProps> = ({ params }) => {
   const [decryptedWord, setWord] = useState<string>();
   const [data, setData] = useState<Game | null>(null);
 
-  const {
-    isLocked, setLocked,
-    incrLine, decrLine, currentLineIndex,
-    addLetter, removeLetter,
-    lines, init, setLine,
-    clear
-  } = useCurrentParty();
+  const { isLocked, incrLine, currentLineIndex, addLetter, removeLetter, lines, init, setLine, clear } = useCurrentParty();
 
   const router = useRouter();
 
-  const fetchGame = useCallback(async () => {
-    setIsLoading(true);
-    
-    try {
-      const response = await fetch(`/api/party/${params.gameId}`);
-      const gameData = await response.json();
-      if (response.ok) {
-        setData(gameData);
-        init(gameData.lines);
-        setIsReadOnly(gameData.isLive === false);
-      } else {
-        throw new Error("Error fetching game");
-      }
-    } catch (error) {
-      console.error("Error fetching game", error);
-    } finally {
-      setIsLoading(false);
+  const submit = async() => {
+    if (isSending) return;
+    if (isLocked) return;
+    if (lines[currentLineIndex].some((l) => l.value === "")) return;
+    setIsSending(true);
+
+    const response = await fetch(`/api/party/${params.gameId}/lines`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        currentLineIndex,
+        lines,
+        currentWord: lines[currentLineIndex].map((l) => l.value.toLocaleLowerCase()).join(""),
+        word: data?.word
+      })
+    });
+
+    const schema = z.object({
+      word: z.string(),
+      lines: z.array(z.array(z.object({
+        value: z.string(),
+        status: z.string(),
+        isJoker: z.boolean().optional()
+      }))),
+      hasWon: z.boolean(),
+      hasLost: z.boolean()
+    }).safeParse(await response.json());
+
+    if (!schema.success) return console.error(schema.error);
+
+    setWordFound(schema.data.hasWon);
+    setWord(schema.data.word);
+
+    setLine(schema.data.lines[currentLineIndex] as Line, currentLineIndex);
+    if (schema.data.hasWon) {
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      setIsReadOnly(true);
+      setEndingReason("WORDLE_WIN");
+      setIsEnding(true);
+      clear();
+
+      router.push("/?from=" + params.gameId);
+    } else if (schema.data.hasLost) {
+      setIsReadOnly(true);
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      setEndingReason("WORDLE_LOSE");
+      setIsEnding(true);
+      clear();
+
+      router.push("/?from=" + params.gameId);
+    } else {
+      incrLine();
     }
-  }, [params.gameId, init]);
+
+    setIsSending(false);
+  };
 
   useEffect(() => {
-    fetchGame();
-  }, [fetchGame]);
+    const fetchData = async () => {      
+      setIsLoading(true);
+      const authResponse = await fetch("/api/auth/is-connected");
+      const authData = await authResponse.json();
+      if (authResponse.ok) setIsConnected(authData.isConnected);
+      else setIsConnected(false);
+
+      try {
+        const response = await fetch(`/api/party/${params.gameId}`);
+        const data = await response.json();
+        if (response.ok) {
+          setData(data);
+          init(data.lines);
+        } else {
+          throw new Error("Error fetching data");
+        }
+      } catch (error) {
+        console.error("Error fetching² data", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, [params.gameId, init]);
+
+  useEventListener("keydown", (event) => {
+    if (event.key === "Backspace") {
+      removeLetter();
+    } else if (event.key === "Enter") {
+      submit();
+    } else if (event.key.length === 1) {
+      if ("abcdefghijklmnopqrstuvwxyz".includes(event.key.toLowerCase())) addLetter(event.key.toUpperCase());
+    }
+  });
 
   if (isLoading || isEnding) {
     return (
@@ -158,68 +226,38 @@ const Page: Component<BoardProps> = ({ params }) => {
             </div>
 
             <div className="p-2 w-full">
-              <div className="flex gap-2">
-                <Button className="w-full" size={"default"} variant={"secondary"}>
-                  Démarrer
-                </Button>
-                <HintsDialog isConnected={true} isMobile={width < 640}>
-                  <Button className="w-full" size={"default"} variant={"hint"}>
-                    Hints
-                  </Button>
-                </HintsDialog>
-              </div>
-
-                {/* <Button onClick={async() => {
-                  const response = await fetch(`/api/party/${params.gameId}/lines`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      currentLineIndex,
-                      lines,
-                      currentWord: lines[currentLineIndex].map((l) => l.value).join(""),
-                      word: data?.word
-                    })
-                  });
-
-                  const schema = z.object({
-                    word: z.string(),
-                    lines: z.array(z.array(z.object({
-                      value: z.string(),
-                      status: z.string(),
-                      isJoker: z.boolean().optional()
-                    }))),
-                    hasWon: z.boolean()
-                  }).safeParse(await response.json());
-
-                  if (!schema.success) return console.error(schema.error);
-
-                  console.log("Response", schema.data);
-
-                  setWordFound(schema.data.hasWon);
-                  setWord(schema.data.word);
-
-                  if (schema.data.hasWon) {
-                    setEndingReason("WORDLE_WIN");
-                    setIsEnding(true);
-
-                    router.push("/");
-                  } else {
-                    setLine(schema.data.lines[currentLineIndex] as Line, currentLineIndex);
-                    incrLine();
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <Button
+                  className="w-full"
+                  size={"default"}
+                  variant={"secondary"}
+                  onClick={submit}
+                  disabled={
+                    isSending ||
+                    isLocked ||
+                    (lines[currentLineIndex] && lines[currentLineIndex].some((l) => l.value === ""))
                   }
+                >
+                  {isSending && <><Loader2 size={16} className="animate-spin" />&nbsp;</>}
+                  Validate
+                </Button>
+                {isConnected ? (
+                  <HintsDialog isConnected={isConnected ?? false} isMobile={width < 640}>
+                    <Button className="w-full" size={"default"} variant={"default"}>Hints</Button>
+                  </HintsDialog>
+                ) : <Button className="w-full" size={"default"} variant={"default"} disabled>Hints</Button>}
+              </div>
+              
+              {!isReadOnly && (
+                <form onSubmit={async() => {
+                  setEndingReason("WORDLE_ABORT");
+                  setIsEnding(true);
+                  clear();
+                  await handleAbandon({ gameId: params.gameId });
                 }}>
-                  Submit
-                </Button> */}
-                
-                {!isReadOnly && (
-                  <form onSubmit={async() => {
-                    setEndingReason("WORDLE_ABORT");
-                    setIsEnding(true);
-                    await handleAbandon({ gameId: params.gameId });
-                  }}>
-                    <button type="submit" className="bg-[#1e351a#]">click to Abandon</button>
-                  </form>
-                )}
+                  <button type="submit" className="bg-[#1e351a#]">click to Abandon</button>
+                </form>
+              )}
             </div>
           </div>
         </div>
