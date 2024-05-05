@@ -34,7 +34,7 @@ const Wordle = async(): Promise<ReactElement> => {
             ) : (
               <>
                 <User size={16} />&nbsp;
-                Login
+                Guest
               </>
             )}
           </TabsTrigger>
