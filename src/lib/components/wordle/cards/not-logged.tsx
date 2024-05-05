@@ -16,6 +16,8 @@ export const NotLoggedCard: NPAsyncComponent = async () => {
 
       <div className="flex justify-end mt-3">
         {!session && <LoginButton provider="GitHub" />}
+        {!session && <LoginButton provider="Google" />}
+        {!session && <LoginButton provider="Discord" />}
       </div>
     </Alert>
   );
