@@ -14,12 +14,16 @@ import { Locked } from "@/lib/components/locked";
 import Link from "next/link";
 import { Game } from "@prisma/client";
 import { CreateWordleButton } from "@/lib/components/wordle/create-button/create-button";
+import { cookies } from "next/headers";
 
 export const HomeNormalStats: NPAsyncComponent = async() => {
   const session = await auth();
+  let userId: string | undefined = "";
+  if (session) userId = session.user?.id ?? "";
+  if (!session) userId = `guest${cookies().get("guestUserId")?.value}`;
   
   const user = !session ? null : await db.user.findUnique({
-    where: { id: session?.user?.id ?? "" },
+    where: { id: userId },
     include: { games: { where: { type: "SOLO" } } }
   })
 
