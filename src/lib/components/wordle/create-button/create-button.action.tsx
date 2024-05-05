@@ -11,6 +11,8 @@ export const createGame: ({ gameType, session }: { gameType: GAME_TYPE; session:
   const food = cookies();
   const guestId = food.get("guestUserId")?.value;
 
+  const word = await fetch("https://trouve-mot.fr/api/size/5").then((res) => res.json()).then((data) => data[0]);
+
   const game = await db.game.create({
     data: {
       id: `${Math.random().toString(36).substring(7)}-${Math.random().toString(36).substring(7)}-${Math.random().toString(36).substring(7)}-${Math.random().toString(36).substring(7)}`,
@@ -32,7 +34,7 @@ export const createGame: ({ gameType, session }: { gameType: GAME_TYPE; session:
       },
       categoryId: "general",
       result: "UNKNOWN",
-      word: "rouge",
+      word: word.name,
       lines: [
         [ { value: "", status: "unknown" },
           { value: "", status: "unknown" },
