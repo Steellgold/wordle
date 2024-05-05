@@ -61,10 +61,10 @@ export const useCurrentParty = create(
 
         const line = lines[lineIndex];
 
-        const index = line.findIndex((l) => l.value !== "");
+        const index = line.slice().reverse().findIndex((l) => l.value !== "");
         if (index === -1) return;
 
-        line[index].value = "";
+        line[line.length - 1 - index].value = "";
 
         set((state) => {
           const lines = [...state.lines];
